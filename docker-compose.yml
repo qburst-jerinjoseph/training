@@ -1,0 +1,31 @@
+version: '3.5'
+services:
+  training-data:
+    image: postgres:10.5
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-training}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-training}
+      - POSTGRES_DB=training_develop
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+  api:
+    build:
+      context: .
+    ports:
+      - ${API_PORT:-3005}:${API_PORT:-3005}
+    # depends_on: 
+    #   - training-data
+    # environment:
+    #   - POSTGRES_HOST=training-data
+    #   - POSTGRES_PORT=5432
+    #   - POSTGRES_USER=training
+    #   - POSTGRES_PASSWORD=training
+    #   - POSTGRES_DB=training_develop
+  pgweb:
+    image: sosedoff/pgweb
+    ports:
+      - "8083:8081"
+    depends_on: 
+      - training-data
+    environment:
+      - DATABASE_URL=postgres://training:training@training-data:5432/training_develop?sslmode=disable
