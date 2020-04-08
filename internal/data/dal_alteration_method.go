@@ -38,7 +38,7 @@ func (db *postgresRepo) AlterationMethodList() ([]AlterationMethod, error) {
 func (db *postgresRepo) AlterationMethodGet(id int) (*AlterationMethod, error) {
 	a := &AlterationMethod{}
 	err := db.QueryRow(
-		"select id,default_name from impt.alteration_method_z where id=$1;",
+		"select id,default_name from alteration_method where id=$1;",
 		id,
 	).Scan(
 		&a.ID,
