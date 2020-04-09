@@ -2,6 +2,8 @@ package data
 
 import (
 	"database/sql"
+	"fmt"
+	"os"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
@@ -20,11 +22,18 @@ type postgresRepo struct {
 }
 
 func NewPostgresRepo() (Repo, error) {
-	connectionStr := "postgres://training:training@localhost:5432/training_develop?sslmode=disable"
+	dbName := os.Getenv("DB_NAME")
+	if dbName == "" {
+		dbName = "training_develop"
+	}
+	connectionStr := "postgres://training:training@localhost:5432/%s?sslmode=disable"
 
 	db, err := sql.Open(
 		"postgres",
-		connectionStr,
+		fmt.Sprintf(
+			connectionStr,
+			dbName,
+		),
 	)
 	if err != nil {
 		return nil, err
